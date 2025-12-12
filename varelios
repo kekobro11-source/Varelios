@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varelios - Normal SMP Sunucusu</title>
+    <style>
+        body { background: linear-gradient(135deg, #0f0f23, #1a0033); color: #fff; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1200px; margin: auto; text-align: center; }
+        h1 { font-size: 4.5em; text-shadow: 0 0 40px #8a2be2; margin-bottom: 10px; animation: glow 2.5s infinite alternate; }
+        @keyframes glow { from { text-shadow: 0 0 20px #8a2be2; } to { text-shadow: 0 0 50px #8a2be2; } }
+        .welcome { font-size: 1.8em; margin: 20px 0; }
+        p { font-size: 1.4em; }
+        .status-card { background: rgba(0,0,0,0.7); border: 3px solid #8a2be2; border-radius: 25px; padding: 40px; margin: 30px auto; max-width: 600px; box-shadow: 0 0 40px #8a2be2; }
+        .online { color: #00ff00; font-size: 2em; } .offline { color: #ff0000; font-size: 2em; }
+        .ip-btn { background: #8a2be2; color: white; border: none; padding: 18px 40px; font-size: 1.4em; border-radius: 50px; cursor: pointer; transition: all 0.4s; }
+        .ip-btn:hover { box-shadow: 0 0 30px #8a2be2; transform: scale(1.1); }
+        #copyMsg { color: #00ff88; font-size: 1.3em; margin-top: 15px; }
+        nav { margin: 30px 0; } nav a { color: #8a2be2; text-decoration: none; font-size: 1.4em; margin: 0 20px; transition: color 0.3s; } nav a:hover { color: #fff; }
+        .rules { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 30px; margin: 40px auto; max-width: 800px; text-align: left; }
+        .rules h2 { text-align: center; }
+        .rules ul { list-style: none; padding-left: 20px; }
+        .rules li { font-size: 1.2em; margin: 12px 0; position: relative; }
+        .rules li:before { content: "•"; color: #8a2be2; font-weight: bold; position: absolute; left: -20px; }
+        footer { margin-top: 60px; font-size: 1em; opacity: 0.8; }
+        @media (max-width: 768px) { h1 { font-size: 2.5em; } .status-card { padding: 25px; } .rules { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌀 Varelios</h1>
+        <p class="welcome">Normal SMP Sunucusu - Saf Minecraft Deneyimi!</p>
+        
+        <nav>
+            <a href="#status">Sunucu Durumu</a> | 
+            <a href="https://discord.gg/YFtG5N4tAe" target="_blank">Discord'a Katıl</a>
+        </nav>
+        
+        <div id="status" class="status-card">
+            <h2>🌐 Sunucu Durumu</h2>
+            <div id="statusInfo">Yükleniyor...</div>
+            <br>
+            <button class="ip-btn" onclick="copyIP()">📋 IP'yi Kopyala</button>
+            <div id="copyMsg"></div>
+            <p><small>IP: 185.233.164.101:53290</small></p>
+        </div>
+        
+        <div class="rules">
+            <h2>📜 Discord İçi Kurallar</h2>
+            <ul>
+                <li>Ailevi küfür etmeyin.</li>
+                <li>Dini değerlere küfür etmeyin.</li>
+                <li>Milli değerlere küfür etmeyin.</li>
+                <li>Spam atmayın.</li>
+                <li>+18 Görseller atmayın.</li>
+            </ul>
+            
+            <h2>🎮 Oyun İçi Kurallar</h2>
+            <ul>
+                <li>Hile açmayın.</li>
+                <li>Dupe yapmayın.</li>
+                <li>Bug kullanmayın.</li>
+                <li>Kasabadaki buildlere zarar vermeyin.</li>
+                <li>Yazılı olmayan ama yasak olabilecek şeyleri yapmayın.</li>
+                <li>Herkes ana basesini aynı bölgeye (kasabaya) yapmak zorundadır.</li>
+                <li>Zamanı gelene kadar nethera ve ende gitmek yasaktır.</li>
+                <li>Kasabada pvp atmak yasaktır.</li>
+                <li>Kasabadaki insanların eşyalarını çalmak yasaktır.</li>
+                <li>Kasabadaki buildlerin kurallarına uymak zorunludur.</li>
+            </ul>
+        </div>
+        
+        <footer>
+            © 2025 Varelios by Eclipse Team | Status Otomatik Güncel
+        </footer>
+    </div>
+
+    <script>
+        const IP = '185.233.164.101:53290';
+        const API = `https://api.mcsrvstat.us/2/${IP}`;
+        
+        async function updateStatus() {
+            try {
+                const res = await fetch(API);
+                const data = await res.json();
+                const info = document.getElementById('statusInfo');
+                if (data.online) {
+                    info.innerHTML = `
+                        <span class="online">🟢 ONLINE</span><br><br>
+                        👥 Oyuncular: ${data.players?.online || 0}/${data.players?.max || '?'}<br><br>
+                        🆔 Versiyon: 1.21.10<br><br>
+                        📢 MOTD: ${data.motd?.clean?.join(' ') || 'Hoş geldin!'}
+                    `;
+                } else {
+                    info.innerHTML = '<span class="offline">🔴 KAPALI</span><br><br>Sunucu yakında açılır dayımlar! 🔥<br><br>🆔 Versiyon: 1.21.10';
+                }
+            } catch {
+                document.getElementById('statusInfo').innerHTML = '<span class="offline">🔴 Ulaşılamıyor</span><br><br>🆔 Versiyon: 1.21.10';
+            }
+        }
+        
+        function copyIP() {
+            navigator.clipboard.writeText(IP).then(() => {
+                document.getElementById('copyMsg').textContent = '✅ IP Kopyalandı!';
+                setTimeout(() => document.getElementById('copyMsg').textContent = '', 3000);
+            });
+        }
+        
+        updateStatus();
+        setInterval(updateStatus, 10000);
+    </script>
+</body>
+</html>
